@@ -1,4 +1,4 @@
-package com.example.github.newsapplication.ui.gallery
+package com.example.github.newsapplication.ui.collection
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -10,8 +10,8 @@ enum class State {
 }
 
 data class NetworkState(
-    val state: State,
-    val msg: String? = null,
+    val status: State,
+    val totalResults: String? = null,
     val code: Int? = null
 ) {
     companion object {

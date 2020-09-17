@@ -1,4 +1,4 @@
-package com.example.github.newsapplication.ui.gallery
+package com.example.github.newsapplication.ui.collection
 
 import android.os.Bundle
 import android.view.LayoutInflater

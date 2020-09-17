@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+
     xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.home.HomeFragment">
     <data>
         <import type="android.view.View" />
+        <variable
+            name="indicator"
+            type="String" />
         <variable
             name="refreshing"
             type="Boolean" />
@@ -20,6 +22,9 @@
         <variable
             name="emptyStatus"
             type="Boolean" />
+        <variable
+            name="refreshColor"
+            type="Integer" />
         <variable
             name="adapter"
             type="androidx.paging.PagedListAdapter" />
@@ -40,7 +45,7 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        bind:refreshColor="#AAFF0000"
+        bind:refreshColor="@{refreshColor}"
         bind:refreshListener="@{refreshListener}"
         bind:refreshState="@{refreshing}"
       >
