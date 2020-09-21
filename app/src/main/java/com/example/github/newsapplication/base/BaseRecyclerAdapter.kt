@@ -1,5 +1,6 @@
 package com.example.github.newsapplication.base
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -17,7 +18,7 @@ abstract class BaseRecyclerAdapter<T>(var mData: MutableList<T>?):
     private var itemListener: OnItemClickListener? = null
     private var itemLongClickListener : OnItemLongClickListener? =null
 
-    fun setOnItemListener(listener: OnItemClickListener){
+    fun setOnItemListener(listener: OnItemClickListener?){
         this.itemListener = listener
     }
 
@@ -38,12 +39,12 @@ abstract class BaseRecyclerAdapter<T>(var mData: MutableList<T>?):
         val data :T = getItemData(position) ?: return
         setVariable(data, position, holder)
         holder.binding.executePendingBindings()// when data change , system will be refresh next frame. Using executePendingBindings() will be immediately
-        holder.binding.root.setOnLongClickListener{
-            v-> itemLongClickListener?.onItemLongClick(position,v)
-            false//return consumption event
-        }
-        holder.binding.root.setOnClickListener{
-            view ->  itemListener?.onItemClick(position,view)
+        holder.binding.root.setOnClickListener {
+                v -> itemListener?.onItemClick(position, v)
+            Log.v("itemListener",if (itemListener == null) "2222" else "333")}
+        holder.binding.root.setOnLongClickListener { v ->
+            itemLongClickListener?.onItemLongClick(position, v)
+            false
         }
     }
     override fun getItemCount(): Int = mData?.size ?: 0

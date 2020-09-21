@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.paging.AsyncPagedListDiffer
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 
@@ -17,13 +16,14 @@ abstract class BasePagedListAdapter<T,VB : ViewDataBinding>(val callback : DiffU
     private var itemListener : OnItemClickListener? = null
     private var itemLongerListener : OnItemLongClickListener?  = null
 
-    fun  setOnItemListener(itemListener : OnItemClickListener){
-        this.itemListener = itemListener
+    fun setOnItemListener(listener: OnItemClickListener?) {
+        this.itemListener = listener
     }
 
-    fun  setOnItemLongerListener(itemLongClickListener: OnItemLongClickListener){
-        this.itemLongerListener = itemLongerListener
+    fun setOnItemLongListener(listener: OnItemLongClickListener?) {
+        this.itemLongerListener = listener
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<VB> {
         return BaseViewHolder(

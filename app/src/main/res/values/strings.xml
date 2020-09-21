@@ -14,4 +14,6 @@
     <string name="data_empty">Sorry data is empty</string>
     <string name="loading_data">Loading data</string>
     <string name="reload_data">Ohh... Something wrong You can click reload </string>
+
+    <string name="operate_helper">How to bookmark articles and items: <b>Long press</b> the current article or item to bookmark\n\nHow to cancel the bookmark: in <b>"My Favorites"</b> , You can <b>long press</b> the article or URL to uncollect it\n\n></string>
 </resources>

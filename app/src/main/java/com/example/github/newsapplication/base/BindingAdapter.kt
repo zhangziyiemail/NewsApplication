@@ -8,8 +8,6 @@ import android.text.method.MovementMethod
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.Nullable
-import androidx.constraintlayout.widget.Placeholder
 import androidx.core.text.HtmlCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -26,14 +24,15 @@ import com.youth.banner.loader.ImageLoader
  */
 
 @BindingAdapter("bind:img")
-fun loadImage(view: ImageView,url :String){
+fun loadImage(view: ImageView, url: String) {
     Glide.with(view.context)
         .load(url)
         .apply(RequestOptions.centerCropTransform())
         .into(view)
 }
-@BindingAdapter(value =["bind:imgUrl","bind:placeHolder","bind:error"],requireAll = false)
-fun loadImageWithPlace(view: ImageView, url:String, placeholder: Drawable,errorHolder:Drawable){
+
+@BindingAdapter(value = ["bind:imgUrl", "bind:placeHolder", "bind:error"], requireAll = false)
+fun loadImageWithPlace(view: ImageView, url: String, placeholder: Drawable, errorHolder: Drawable) {
     Glide.with(view.context)
         .load(url)
         .apply(
@@ -43,6 +42,7 @@ fun loadImageWithPlace(view: ImageView, url:String, placeholder: Drawable,errorH
                 .error(errorHolder)
         ).into(view)
 }
+
 @BindingAdapter("bind:circleImg")
 fun bindCircleImage(imageView: ImageView, imgRes: Drawable) {
     Glide.with(imageView.context)
@@ -53,49 +53,26 @@ fun bindCircleImage(imageView: ImageView, imgRes: Drawable) {
 
 class GlideLoader : ImageLoader() {
     override fun displayImage(context: Context, path: Any, imageView: ImageView) {
-        Glide.with(context).load(path).apply(RequestOptions.centerCropTransform().placeholder(R.drawable.image_place_holder)).into(imageView)
-    }
-}
-@BindingAdapter("bind:pageItemClick")
-fun bindPagingItemClick(recyclerView: RecyclerView, listener: OnItemClickListener?) {
-    val adapter = recyclerView.adapter
-
-    if (adapter == null || adapter !is BasePagedListAdapter<*, *>) return
-
-    if (listener != null) {
-        adapter.setOnItemListener(listener)
+        Glide.with(context).load(path)
+            .apply(RequestOptions.centerCropTransform().placeholder(R.drawable.image_place_holder))
+            .into(imageView)
     }
 }
 
-@BindingAdapter("bind:pageItemLongClick")
-fun bindPagingItemClick(recyclerView: RecyclerView, listener: OnItemLongClickListener?) {
-    val adapter = recyclerView.adapter
-
-    if (adapter == null || adapter !is BasePagedListAdapter<*, *>) return
-
-    if (listener != null) {
-        adapter.setOnItemLongerListener(listener)
-    }
-}
 
 
 @BindingAdapter("bind:listItemClick")
-fun bindRecyclerItemClick(recyclerView: RecyclerView, listener: OnItemClickListener?) {
+fun bindRecyclerItemClick(recyclerView: RecyclerView, listener: OnItemClickListener) {
     val adapter = recyclerView.adapter
-
     if (adapter == null || adapter !is BaseRecyclerAdapter<*>) return
+    adapter.setOnItemListener(listener)
 
-    if (listener != null) {
-        adapter.setOnItemListener(listener)
-    }
 }
 
 @BindingAdapter("bind:listItemLongClick")
-fun bindRecyclerItemLOngClick(recyclerView: RecyclerView, listener: OnItemLongClickListener?) {
+fun bindRecyclerItemLOngClick(recyclerView: RecyclerView, listener: OnItemLongClickListener) {
     val adapter = recyclerView.adapter
-
     if (adapter == null || adapter !is BaseRecyclerAdapter<*>) return
-
     adapter.setOnItemLongListener(listener)
 }
 

@@ -1,4 +1,4 @@
-package com.example.github.newsapplication.ui.slideshow
+package com.example.github.newsapplication.ui.detailfragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

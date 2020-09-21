@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import kotlinx.coroutines.CoroutineScope
@@ -56,4 +58,10 @@ abstract class BaseFragment<VB : ViewDataBinding> : Fragment(),CoroutineScope by
     abstract fun getLayoutId():Int
     abstract fun actionsOnViewInflate()
     abstract fun initFragment(view: View, savedInstanceState: Bundle?)
+
+    fun <T : ViewModel> getViewModel(clazz: Class<T>): T =
+        ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(clazz)
+
+    fun <T : ViewModel> getSharedViewModel(clazz: Class<T>): T =
+        ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory()).get(clazz)
 }

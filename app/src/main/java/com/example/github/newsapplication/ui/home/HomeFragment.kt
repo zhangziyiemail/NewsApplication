@@ -3,10 +3,10 @@ package com.example.github.newsapplication.ui.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.github.newsapplication.R
 import com.example.github.newsapplication.base.BaseFragment
@@ -16,6 +16,7 @@ import com.example.github.newsapplication.base.OnItemClickListener
 import com.example.github.newsapplication.base.OnItemLongClickListener
 import com.example.github.newsapplication.databinding.FragmentHomeBinding
 import com.example.github.newsapplication.entity.State
+import com.example.github.newsapplication.ui.detail.DetailFragment
 import org.jetbrains.anko.toast
 
 
@@ -31,9 +32,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     }
 
-    private var isFirstObserver = true
     private var hasCache = true
-    private var onInflated = true
 
     override fun actionsOnViewInflate() {
 
@@ -47,31 +46,41 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         mBinding?.let { binding ->
             binding.refreshColor = R.color.colorPrimary
             binding.refreshListener = SwipeRefreshLayout.OnRefreshListener {
-
+                mViewModel.articles?.observe(this, Observer {
+                    mAdapter.update(it)
+                })
             }
 
             binding.adapter = mAdapter
 
-            binding.itemLongClick = OnItemLongClickListener { position, _ ->
+            binding.itemLongClick =
+                OnItemLongClickListener { position, _ ->
 
-            }
-            binding.itemClick = OnItemClickListener{ position,v->
-                val controller = Navigation.findNavController(v)
-                controller.navigate(R.id.action_toDetail)
-            }
+                }
+            binding.itemClick =
+                OnItemClickListener { position, v ->
+                    mAdapter.getItemData(position)?.let { art ->
+                        Log.v("url",art.url)
+                        Log.v("url",art.content)
+                        DetailFragment.viewDetail(
+                            mNavController,
+                            R.id.action_homeFragment_to_detailFragment,
+                            art.title,
+                            art.urlToImage,
+                            art.content
+                        )
+                    }
+                }
 
-            binding.articleList.setOnTouchListener { _, _ ->
-
-                false
-            }
-
+//            binding.articleList.setOnTouchListener { _, _ ->
+//                (parentFragment as? HomeFragment)?.closeMenu(true)
+//                false
+//            }
 
             binding.errorReload = ErrorReload {
 
             }
-
             binding.indicator = resources.getString(R.string.action_settings)
-
         }
     }
 
@@ -96,10 +105,27 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             }
         })
 
+
+
         mViewModel.articles?.observe(this, Observer {
             mAdapter.update(it)
         })
     }
+//    private fun showCollectDialog(article: HomeFragment, position: Int) =
+//        requireContext().alert(
+//            if (article.collect) "「${article.title}」已收藏"
+//            else " 是否收藏 「${article.title}」"
+//        ) {
+//            yesButton {
+//                if (!article.collect) mCollectionViewModel.collectArticle(article.id, {
+//                    mViewModel.articles?.value?.get(position)?.collect = true
+//                    requireContext().toast("收藏成功")
+//                }, { message ->
+//                    requireContext().toast(message)
+//                })
+//            }
+//            if (!article.collect) noButton { }
+//        }.show()
 
     private fun injectStates(
         refreshing: Boolean = false,
@@ -112,5 +138,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             binding.errorStatus = error
         }
     }
+
+
 }
 
