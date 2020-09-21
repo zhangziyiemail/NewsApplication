@@ -1,92 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     xmlns:bind="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.home.HomeFragment">
+    xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="indicator"
             type="String" />
-        <variable
-            name="refreshing"
-            type="Boolean" />
-        <variable
-            name="errorStatus"
-            type="Boolean" />
-        <variable
-            name="loadingStatus"
-            type="Boolean" />
-        <variable
-            name="emptyStatus"
-            type="Boolean" />
-        <variable
-            name="refreshColor"
-            type="Integer" />
+
         <variable
             name="adapter"
-            type="androidx.paging.PagedListAdapter" />
-        <variable
-            name="errorReload"
-            type="com.example.github.newsapplication.base.ErrorReload" />
+            type="androidx.recyclerview.widget.RecyclerView.Adapter" />
+
         <variable
             name="itemClick"
             type="com.example.github.newsapplication.base.OnItemClickListener" />
+
         <variable
             name="itemLongClick"
             type="com.example.github.newsapplication.base.OnItemLongClickListener" />
+
+        <variable
+            name="refreshing"
+            type="Boolean" />
+
+        <variable
+            name="refreshColor"
+            type="Integer" />
+
+        <variable
+            name="errorStatus"
+            type="Boolean" />
+
+        <variable
+            name="loadingStatus"
+            type="Boolean" />
+
+        <variable
+            name="emptyStatus"
+            type="Boolean" />
+
+        <variable
+            name="errorReload"
+            type="com.example.github.newsapplication.base.ErrorReload" />
+
         <variable
             name="refreshListener"
             type="androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener" />
 
     </data>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         bind:refreshColor="@{refreshColor}"
         bind:refreshListener="@{refreshListener}"
-        bind:refreshState="@{refreshing}"
-      >
+        bind:refreshState="@{refreshing}">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/article_list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:scrollbarThumbVertical="@mipmap/bg_item_news"
-        android:scrollbars="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
-        bind:adapter="@{adapter}"
-        bind:hasFixedSize="@{true}"
-        bind:pageItemClick="@{itemClick}"
-        tools:itemCount="5"
-        tools:listitem="@layout/item_newslist"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/article_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:scrollbars="vertical"
+                android:visibility="@{errorStatus || loadingStatus || emptyStatus ? View.GONE : View.VISIBLE}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                bind:adapter="@{adapter}"
+                bind:hasFixedSize="@{true}"
+                bind:pageItemClick="@{itemClick}"
+                bind:pageItemLongClick="@{itemLongClick}"
+                tools:itemCount="20"
+                tools:listitem="@layout/item_newslist" />
 
-        <com.example.github.newsapplication.widget.StatusError
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:visibility="@{errorStatus ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"
-            bind:reload="@{errorReload}"/>
-        <com.example.github.newsapplication.widget.StatusLoading
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:visibility="@{loadingStatus ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="parent" />
+            <com.example.github.newsapplication.widget.StatusError
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{errorStatus ? View.VISIBLE : View.GONE}"
+                bind:reload="@{errorReload}" />
 
-        <com.example.github.newsapplication.widget.StatusEmpty
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:visibility="@{emptyStatus ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"/>
+            <com.example.github.newsapplication.widget.StatusLoading
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{loadingStatus ? View.VISIBLE : View.GONE}" />
+
+            <com.example.github.newsapplication.widget.StatusEmpty
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{emptyStatus ? View.VISIBLE : View.GONE}" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

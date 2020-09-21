@@ -1,13 +1,14 @@
 package com.example.github.newsapplication.ui.home
 
+import android.widget.BaseAdapter
+import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import androidx.paging.PageKeyedDataSource
 import androidx.recyclerview.widget.DiffUtil
 import com.example.github.newsapplication.R
 import com.example.github.newsapplication.base.*
-import com.example.github.newsapplication.data.db.MyNewsData
-import com.example.github.newsapplication.databinding.ItemNewsBinding
+import com.example.github.newsapplication.databinding.ItemNewslistBinding
 import com.example.github.newsapplication.entity.NetworkState
 import com.example.github.newsapplication.entity.NewsData
 import com.kuky.demo.wan.android.network.RetrofitManager
@@ -19,91 +20,45 @@ import kotlinx.coroutines.withContext
  *   Created by zhangziyi on 9/8/20 22:29
  */
 class NewsListRepository {
-    suspend fun newsListArticles(page: Int) : List<NewsData>? = withContext(Dispatchers.IO){
-        RetrofitManager.apiService.homeArticles().datas
-    }
-}
-class NewsArticleDataSource(
-    private val repository : NewsListRepository
-): PageKeyedDataSource<Int,NewsData>(), CoroutineScope by IOScope(){
-    val initState = MutableLiveData<NetworkState>()
-
-    override fun loadInitial(
-        params: LoadInitialParams<Int>,
-        callback: LoadInitialCallback<Int, NewsData>
-    ) {
-        safeLaunch {
-            block = {
-                initState.postValue(NetworkState.LOADING)
-                repository.newsListArticles(1)?.let {
-                    callback.onResult(it, null, 1)
-                    initState.postValue(NetworkState.LOADED)
-                }
-            }
-            onError = {
-                initState.postValue(NetworkState.error(it.message, ERROR_CODE_INIT))
-            }
-        }
-    }
-
-    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, NewsData>) {
-       safeLaunch {
-           block ={
-               repository.newsListArticles(params.key)?.let {
-                   callback.onResult(it, params.key + 1)
-               }
-           }
-           onError ={
-               initState.postValue(NetworkState.error(it.message, ERROR_CODE_MORE))
-           }
-       }
-    }
-
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, NewsData>) {
-
-    }
-}
-class NewsListDataSourceFactory(
-    private val repository: NewsListRepository
-):DataSource.Factory<Int,NewsData>(){
-    val source = MutableLiveData<NewsArticleDataSource>()
-
-    override fun create(): DataSource<Int, NewsData> = NewsArticleDataSource(repository).apply {
-        source.postValue(this)
+    suspend fun newsListArticles(page: Int) : MutableList<NewsData>? = withContext(Dispatchers.IO){
+        RetrofitManager.apiService.homeArticles().articles
     }
 }
 
-class HomeArticleAdapter : BasePagedListAdapter<MyNewsData, ItemNewsBinding>(DIFF_CALLBACK){
 
+class HomeArticleAdapter : BaseRecyclerAdapter<NewsData>(null){
 
-    companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MyNewsData>() {
-            override fun areItemsTheSame(oldItem: MyNewsData, newItem: MyNewsData): Boolean =
-                oldItem.cache_id == newItem.cache_id
-
-            override fun areContentsTheSame(oldItem: MyNewsData, newItem: MyNewsData): Boolean =
-                oldItem == newItem
-        }
-    }
-
-    override fun getLayoutId(layout: Int): Int = R.layout.item_news
+    override fun getLayoutId(layout: Int): Int = R.layout.item_newslist
 
     override fun setVariable(
-        data: MyNewsData,
+        data: NewsData,
         position: Int,
-        holder: BaseViewHolder<ItemNewsBinding>
+        holder: BaseViewHolder<ViewDataBinding>
     ) {
-        holder.binding.data = data
+        (holder.binding as ItemNewslistBinding).error= R.mipmap.error
+        (holder.binding as ItemNewslistBinding).placeHolder= R.mipmap.picture
+        (holder.binding as ItemNewslistBinding).newsdata = data
+    }
+
+
+    fun update(newData: MutableList<NewsData>?){
+        val result = DiffUtil.calculateDiff(NewsListCacheDiffCall(newData, getAdapterData()), true)
+        if (mData == null) {
+            mData = mutableListOf()
+        }
+//        mData?.clear()
+        mData?.addAll(newData ?: mutableListOf())
+        result.dispatchUpdatesTo(this)
     }
 }
 
 class NewsListCacheDiffCall(
-    private val newList : MutableList<MyNewsData>?,
-    private val oldList : MutableList<MyNewsData>? ):DiffUtil.Callback()
+    private val newList : MutableList<NewsData>?,
+    private val oldList : MutableList<NewsData>? ):DiffUtil.Callback()
 {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
         if (newList.isNullOrEmpty() || oldList.isNullOrEmpty()) false
-        else newList[newItemPosition].cache_id == oldList[oldItemPosition].cache_id
+        else newList[newItemPosition].title == oldList[oldItemPosition].title
 
     override fun getOldListSize(): Int = oldList?.size ?: 0
 

@@ -30,7 +30,6 @@ object RetrofitManager {
         val httpLoggingInterceptor = HttpLoggingInterceptor(
             object : HttpLoggingInterceptor.Logger {
                 override fun log(message: String) {
-
                     // 如果是 json 格式内容则打印 json
                     if ((message.startsWith("{") && message.endsWith("}")) ||
                         (message.startsWith("[") && message.endsWith("]"))
@@ -46,8 +45,6 @@ object RetrofitManager {
                 .addHeader("X-Api-Key","add8b7e1169f4d5eb5d3a5cc4fdea2ac")
                 .method(chain.request().method, chain.request().body)
                 .build())
-
-
         }
 
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY

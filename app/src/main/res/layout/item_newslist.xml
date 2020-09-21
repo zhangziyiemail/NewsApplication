@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="newsdata"
+            type="com.example.github.newsapplication.entity.NewsData"/>
+        <variable
+            name="placeHolder"
+            type="Integer" />
+        <variable
+            name="error"
+            type="Integer" />
+    </data>
+<androidx.cardview.widget.CardView
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
@@ -16,43 +29,48 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/bg_item_news"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        bind:imgUrl="@{newsdata.urlToImage ?? newsdata.title }"
+        bind:error="@{error}"
+        bind:placeHolder="@{placeHolder}"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:src="@drawable/itme_bg"
+        android:id="@+id/ct_totle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="81dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/itme_bg"
+            app:layout_constraintHeight_percent="0.5" />
+
         <TextView
             android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:ellipsize="end"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:textSize="24sp"
-            android:textColor="#FFEE58"
             android:hint="TITLE"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-        <TextView
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:hint="time"
-            android:layout_marginRight="8dp"
-            android:textColor="#FFEE58"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
+            android:maxLines="3"
+            android:text="@{newsdata.title}"
+            android:textColor="@color/title_white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/ct_totle"
+            app:layout_constraintRight_toRightOf="@id/ct_totle"
+            app:layout_constraintStart_toStartOf="@+id/ct_totle"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:layout_margin="20dp"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:lottie_rawRes="@raw/like" />
+        <!--        <com.airbnb.lottie.LottieAnimationView-->
+        <!--            android:layout_margin="20dp"-->
+        <!--            android:layout_width="20dp"-->
+        <!--            android:layout_height="20dp"-->
+        <!--            app:layout_constraintRight_toRightOf="parent"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:lottie_rawRes="@raw/like" />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
 
+</layout>

@@ -1,40 +1,35 @@
 package com.example.github.newsapplication.ui.home
 
 import android.database.DatabaseUtils
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.util.Log
+import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.example.github.newsapplication.data.MyDataBase
-import com.example.github.newsapplication.data.MyDatabaseUtils
-import com.example.github.newsapplication.data.db.MyNewsData
+import com.example.github.newsapplication.base.safeLaunch
 import com.example.github.newsapplication.entity.NetworkState
+import com.example.github.newsapplication.entity.NewsData
 
 
 class HomeViewModel(private val response : NewsListRepository) : ViewModel() {
-    var netState :LiveData<NetworkState>? = null
-    var cache: LiveData<PagedList<MyNewsData>>? = null
-    var articles: LiveData<PagedList<MyNewsData>>? = null
+    var netState = MutableLiveData<NetworkState>()
+//    var cache: LiveData<PagedList<MyNewsData>>? = null
+//    var articles: MutableLiveData<MutableList<NewsData>>? = null
 
+    val articles = MutableLiveData<MutableList<NewsData>?>()
+    var page = 1
 
-    fun fetchHomeNews(empty:() ->Unit){
-
+    fun fetchHomeNews(empty:() ->Unit) {
+        viewModelScope.safeLaunch {
+            block = {
+                netState.postValue(NetworkState.LOADING)
+                articles.value = response.newsListArticles(page = 0)
+                netState.postValue(NetworkState.LOADED)
+            }
+            onError = {
+                netState.postValue(NetworkState.error(it.message))
+            }
+        }
     }
-
-    fun  fetchCache(empty: () -> Unit){
-        cache = LivePagedListBuilder(
-            MyDatabaseUtils.newsArticleCacheDao.fetchAllCache(),
-            PagedList.Config.Builder()
-                .setPageSize(20)
-                .setEnablePlaceholders(false)
-                .setInitialLoadSizeHint(20)
-                .build()
-        ).setBoundaryCallback(object : PagedList.BoundaryCallback<MyNewsData>() {
-            override fun onZeroItemsLoaded() = empty()
-        }).build()
-    }
-
 }
 
 

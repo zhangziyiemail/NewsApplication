@@ -3,7 +3,11 @@ package com.example.github.newsapplication.entity
 /**
  *   Created by zhangziyi on 9/8/20 16:05
  */
-
+data class NewWorkState(
+        var status :String,
+        var totalResults : Int,
+        var articles:MutableList<NewsData>
+)
 data class NewsData(
         var source : NewsSource,
         var author :String,

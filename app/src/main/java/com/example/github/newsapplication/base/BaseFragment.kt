@@ -1,6 +1,7 @@
 package com.example.github.newsapplication.base
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -27,6 +28,7 @@ abstract class BaseFragment<VB : ViewDataBinding> : Fragment(),CoroutineScope by
         savedInstanceState: Bundle?
     ): View? {
         retainInstance = true
+
         if (mBinding == null){
             mBinding = DataBindingUtil.inflate(inflater,getLayoutId(),container,false)
             actionsOnViewInflate()
