@@ -16,4 +16,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="customLineColor" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/title_white</item>
+        <item name="colorControlActivated">@color/colorline</item>
+    </style>
+
+
 </resources>

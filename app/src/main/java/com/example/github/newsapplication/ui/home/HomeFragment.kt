@@ -3,26 +3,27 @@ package com.example.github.newsapplication.ui.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.navigation.Navigation
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.github.newsapplication.R
-import com.example.github.newsapplication.base.*
+import com.example.github.newsapplication.base.BaseFragment
+import com.example.github.newsapplication.base.ERROR_CODE_INIT
+import com.example.github.newsapplication.base.ErrorReload
+import com.example.github.newsapplication.base.OnItemClickListener
+import com.example.github.newsapplication.base.OnItemLongClickListener
 import com.example.github.newsapplication.databinding.FragmentHomeBinding
 import com.example.github.newsapplication.entity.State
-import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.toast
+
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private val mAdapter: HomeArticleAdapter by lazy { HomeArticleAdapter() }
 
     private val mViewModel by lazy {
-        ViewModelProvider(requireActivity(),HomeViewmModelFactory(NewsListRepository()))
+        ViewModelProvider(requireActivity(), HomeViewmModelFactory(NewsListRepository()))
             .get(HomeViewModel::class.java)
     }
 
@@ -54,6 +55,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             binding.itemLongClick = OnItemLongClickListener { position, _ ->
 
             }
+            binding.itemClick = OnItemClickListener{ position,v->
+                val controller = Navigation.findNavController(v)
+                controller.navigate(R.id.action_toDetail)
+            }
 
             binding.articleList.setOnTouchListener { _, _ ->
 
@@ -76,17 +81,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         }
 
-        mViewModel.netState?.observe(this, Observer{
-            when(it.status){
-                State.RUNNING -> injectStates(true,loading= !hasCache)
+        mViewModel.netState?.observe(this, Observer {
+            when (it.status) {
+                State.RUNNING -> injectStates(true, loading = !hasCache)
                 State.SUCCESS -> injectStates()
-                State.FAILED ->{
-                   if (it.code == ERROR_CODE_INIT){
-                       injectStates(error = !hasCache)
+                State.FAILED -> {
+                    if (it.code == ERROR_CODE_INIT) {
+                        injectStates(error = !hasCache)
 
-                   }else{
-                       requireContext().toast("no network")
-                   }
+                    } else {
+                        requireContext().toast("no network")
+                    }
                 }
             }
         })
@@ -96,7 +101,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         })
     }
 
-    private fun injectStates(refreshing: Boolean = false, loading: Boolean = false, error: Boolean = false){
+    private fun injectStates(
+        refreshing: Boolean = false,
+        loading: Boolean = false,
+        error: Boolean = false
+    ){
         mBinding?.let { binding->
             binding.refreshing = refreshing
             binding.loadingStatus = loading
