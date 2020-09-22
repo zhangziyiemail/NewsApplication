@@ -17,6 +17,20 @@
             app:exitAnim="@anim/slide_left_out"
             app:popEnterAnim="@anim/slide_left_in"
             app:popExitAnim="@anim/slide_right_out" />
+        <action
+            android:id="@+id/action_homeFragment_to_loginFragment"
+            app:destination="@id/nav_fragment_login"
+            app:enterAnim="@anim/slide_right_in"
+            app:exitAnim="@anim/slide_left_out"
+            app:popEnterAnim="@anim/slide_left_in"
+            app:popExitAnim="@anim/slide_right_out" />
+        <action
+            android:id="@+id/action_homeFragment_to_registerFragment"
+            app:destination="@id/nav_fragment_register"
+            app:enterAnim="@anim/slide_right_in"
+            app:exitAnim="@anim/slide_left_out"
+            app:popEnterAnim="@anim/slide_left_in"
+            app:popExitAnim="@anim/slide_right_out" />
     </fragment>
     <fragment
         android:id="@+id/nav_gallery"
@@ -35,4 +49,23 @@
         android:name="com.example.github.newsapplication.ui.detail.DetailFragment"
         android:label="DetailFragment"
         tools:layout="@layout/fragment_detail" />
+    <fragment
+        android:id="@+id/nav_fragment_register"
+        android:name="com.example.github.newsapplication.ui.login.RegistFragment"
+        android:label="RegistFragment"
+        tools:layout="@layout/fragment_regist" />
+
+    <fragment
+        android:id="@+id/nav_fragment_login"
+        android:name="com.example.github.newsapplication.ui.login.LoginFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/nav_fragment_register"
+            app:enterAnim="@anim/slide_right_in"
+            app:exitAnim="@anim/slide_left_out"
+            app:popEnterAnim="@anim/slide_left_in"
+            app:popExitAnim="@anim/slide_right_out" />
+    </fragment>
 </navigation>

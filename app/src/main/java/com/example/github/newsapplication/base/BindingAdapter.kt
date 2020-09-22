@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.Html
 import android.text.method.MovementMethod
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -107,6 +108,11 @@ fun bindMovementMethod(textView: TextView, method: MovementMethod) {
     textView.movementMethod = method
 }
 
+@BindingAdapter("bind:viewclick")
+fun bindviewClick(view: View, listener: View.OnClickListener) {
+    view.setOnClickListener(listener)
+}
+
 @BindingAdapter("bind:reload")
 fun bindReloadHandler(statusError: StatusError, handler: ErrorReload?) {
     statusError.errorReload = handler
@@ -119,6 +125,8 @@ fun bindRenderHtml(textView: TextView, description: String) {
         Html.fromHtml(description, HtmlCompat.FROM_HTML_MODE_COMPACT)
     else Html.fromHtml(description)
 }
+
+
 
 
 
