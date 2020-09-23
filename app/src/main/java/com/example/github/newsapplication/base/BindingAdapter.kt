@@ -1,10 +1,13 @@
 package com.example.github.newsapplication.base
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.Html
 import android.text.method.MovementMethod
+import android.util.Base64
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -51,6 +54,18 @@ fun bindCircleImage(imageView: ImageView, imgRes: Drawable) {
         .apply(RequestOptions.bitmapTransform(RoundedCorners(360)))
         .into(imageView)
 }
+@BindingAdapter("bind:showbitmap")
+fun showbitmapfunction(imageView: ImageView, imgRes: String) {
+    if(imgRes != "please login"){
+        val imageBytes = Base64.decode(imgRes, 0)
+        val image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+        Glide.with(imageView.context)
+            .load(image)
+            .apply(RequestOptions.bitmapTransform(RoundedCorners(360)))
+            .into(imageView)
+    }
+}
+
 
 class GlideLoader : ImageLoader() {
     override fun displayImage(context: Context, path: Any, imageView: ImageView) {

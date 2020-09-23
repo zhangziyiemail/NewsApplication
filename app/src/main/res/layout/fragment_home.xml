@@ -59,13 +59,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipe"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            bind:refreshColor="@{refreshColor}"
-            bind:refreshListener="@{refreshListener}"
-            bind:refreshState="@{refreshing}">
+<!--        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+<!--            android:id="@+id/swipe"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            bind:refreshColor="@{refreshColor}"-->
+<!--            bind:refreshListener="@{refreshListener}"-->
+<!--            bind:refreshState="@{refreshing}">-->
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -106,7 +106,7 @@
                     android:layout_height="match_parent"
                     android:visibility="@{emptyStatus ? View.VISIBLE : View.GONE}" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+<!--        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/user_profile_drawer"
@@ -115,7 +115,7 @@
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
             android:overScrollMode="never"
-            app:headerLayout="@layout/nav_header_main"
+
             app:menu="@menu/activity_main_drawer" />
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

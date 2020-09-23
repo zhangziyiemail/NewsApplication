@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.databinding.ObservableArrayMap
+import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import com.example.github.newsapplication.MyApplication
 import com.example.github.newsapplication.R
@@ -13,6 +15,7 @@ import com.example.github.newsapplication.Utils.PreferencesHelper
 import com.example.github.newsapplication.Utils.SharePreferencesUtils
 import com.example.github.newsapplication.base.BaseFragment
 import com.example.github.newsapplication.databinding.FragmentLoginBinding
+import com.example.github.newsapplication.entity.ObservableUser
 import kotlinx.android.synthetic.main.fragment_login.*
 
 /**
@@ -21,9 +24,6 @@ import kotlinx.android.synthetic.main.fragment_login.*
 class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
 
-    fun login(view :View){
-
-    }
 
     fun register(view :View){
         mNavController.navigate(R.id.action_loginFragment_to_registerFragment)
@@ -61,7 +61,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         }
 
         if (SharePreferencesUtils.getString(MyApplication.instance,account).equals(password)){
-            //todo  跳转首页 fragment  menu 刷新数据
+            ObservableUser.image.set(SharePreferencesUtils.getString(requireContext(),"image"))
+            ObservableUser.accout.set(SharePreferencesUtils.getString(requireContext(),"account"))
+            ObservableUser.password.set(SharePreferencesUtils.getString(requireContext(),"password"))
+            mNavController.popBackStack()
         }else{
             Toast.makeText(context,"account or password is error",Toast.LENGTH_SHORT).show()
         }

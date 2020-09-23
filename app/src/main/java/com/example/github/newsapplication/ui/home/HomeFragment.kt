@@ -2,29 +2,43 @@ package com.example.github.newsapplication.ui.home
 
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.RequestOptions
 import com.example.github.newsapplication.MyApplication
 import com.example.github.newsapplication.R
 import com.example.github.newsapplication.Utils.PreferencesHelper
+import com.example.github.newsapplication.Utils.SharePreferencesUtils
 import com.example.github.newsapplication.base.BaseFragment
 import com.example.github.newsapplication.base.ERROR_CODE_INIT
 import com.example.github.newsapplication.base.ErrorReload
 import com.example.github.newsapplication.base.OnItemClickListener
 import com.example.github.newsapplication.base.OnItemLongClickListener
+import com.example.github.newsapplication.data.MyDatabaseUtils
 import com.example.github.newsapplication.databinding.FragmentHomeBinding
+import com.example.github.newsapplication.databinding.NavHeaderMainBinding
+import com.example.github.newsapplication.entity.NewsData
+import com.example.github.newsapplication.entity.ObservableUser
 import com.example.github.newsapplication.entity.State
 import com.example.github.newsapplication.ui.detail.DetailFragment
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_regist.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.noButton
 import org.jetbrains.anko.toast
+import org.jetbrains.anko.yesButton
 
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
@@ -35,24 +49,58 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             .get(HomeViewModel::class.java)
     }
 
-    private val mCollectionViewModel by lazy {
-
+    private val mHeaderBinding by lazy {
+        DataBindingUtil.inflate<NavHeaderMainBinding>(
+            layoutInflater, R.layout.nav_header_main, mBinding?.userProfileDrawer, false
+        )
     }
 
     private var hasCache = true
 
     override fun actionsOnViewInflate() {
+        mBinding?.let {
+            it.userProfileDrawer.addHeaderView(mHeaderBinding.root)
+        }
+        mViewModel.fetchHomeNews {  }
+        mViewModel.netState?.observe(this, Observer {
+            when (it.status) {
+                State.RUNNING -> injectStates(true, loading = !hasCache)
+                State.SUCCESS -> injectStates()
+                State.FAILED -> {
+                    if (it.code == ERROR_CODE_INIT) {
+                        injectStates(error = !hasCache)
 
-        fetchHomeArticleList()
+                    } else {
+                        requireContext().toast("no network")
+                    }
+                }
+            }
+        })
+
+        mViewModel.articles?.observe(this, Observer {
+            mAdapter.update(it)
+        })
+
+
+
     }
 
     override fun getLayoutId() = R.layout.fragment_home
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initFragment(view: View, savedInstanceState: Bundle?) {
-        val headerView = user_profile_drawer.getHeaderView(0)
-        headerView.imageView.setOnClickListener(){
-            v -> if (!PreferencesHelper.hasLogin(MyApplication.instance)) toRegistFragment() else toLoginFragment()
+//        val headerView = user_profile_drawer.getHeaderView(0)
+//        val navViewHeaderBinding : NavHeaderMainBinding = NavHeaderMainBinding.bind(headerView)
+//        navViewHeaderBinding.viewclick = View.OnClickListener {
+//            if (!PreferencesHelper.hasLogin(MyApplication.instance)) toRegistFragment() else toLoginFragment()
+//        }
+//        navViewHeaderBinding.user = ObservableUser
+        mHeaderBinding?.let {
+            binding->
+                binding.user = ObservableUser
+                binding.viewclick=View.OnClickListener {
+                    if (!PreferencesHelper.hasLogin(MyApplication.instance)) toRegistFragment() else toLoginFragment()
+                }
         }
         mBinding?.let { binding ->
             binding.refreshColor = R.color.colorPrimary
@@ -66,7 +114,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
             binding.itemLongClick =
                 OnItemLongClickListener { position, _ ->
-
+                    mAdapter.getItemData(position)?.let { article ->
+                        showCollectDialog(article)
+                    }
                 }
             binding.itemClick =
                 OnItemClickListener { position, v ->
@@ -81,16 +131,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                     }
                 }
 
-//            binding.articleList.setOnTouchListener { _, _ ->
-//                (parentFragment as? HomeFragment)?.closeMenu(true)
-//                false
-//            }
-
             binding.errorReload = ErrorReload {
 
             }
 
             binding.indicator = resources.getString(R.string.action_settings)
+
         }
 
         mBinding?.userProfileDrawer?.setNavigationItemSelectedListener {
@@ -111,51 +157,31 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         mBinding?.drawer?.closeDrawer(GravityCompat.START)
     }
 
-    fun fetchHomeArticleList() {
-
-        mViewModel.fetchHomeNews {
-
+    private fun showCollectDialog(article: NewsData) {
+        var collect : Boolean = false
+        GlobalScope.launch(Dispatchers.IO) {
+            collect = article.title?.let { MyDatabaseUtils.newsArticleCacheDao.findArticle(it) } == null
         }
-
-        mViewModel.netState?.observe(this, Observer {
-            when (it.status) {
-                State.RUNNING -> injectStates(true, loading = !hasCache)
-                State.SUCCESS -> injectStates()
-                State.FAILED -> {
-                    if (it.code == ERROR_CODE_INIT) {
-                        injectStates(error = !hasCache)
-
-                    } else {
-                        requireContext().toast("no network")
-                    }
+        requireContext().alert(
+            if (collect)"「${article.title}」collected"
+        else "collect 「${article.title}」"
+        ) {
+            yesButton {
+                GlobalScope.launch (Dispatchers.IO){
+                    MyDatabaseUtils.newsArticleCacheDao.cacheHomeArticles(article)
                 }
+
             }
-        })
+            noButton {
 
-
-
-        mViewModel.articles?.observe(this, Observer {
-            mAdapter.update(it)
-        })
+            }
+        }.show()
     }
-//    private fun showCollectDialog(article: HomeFragment, position: Int) =
-//        requireContext().alert(
-//            if (article.collect) "「${article.title}」已收藏"
-//            else " 是否收藏 「${article.title}」"
-//        ) {
-//            yesButton {
-//                if (!article.collect) mCollectionViewModel.collectArticle(article.id, {
-//                    mViewModel.articles?.value?.get(position)?.collect = true
-//                    requireContext().toast("收藏成功")
-//                }, { message ->
-//                    requireContext().toast(message)
-//                })
-//            }
-//            if (!article.collect) noButton { }
-//        }.show()
+
 
     private fun toFavorites(){
-
+        mNavController.navigate(R.id.action_homeFragment_to_favoritesFragment)
+        mBinding?.drawer?.closeDrawer(GravityCompat.START)
     }
 
     private fun injectStates(
