@@ -24,15 +24,6 @@ import kotlinx.android.synthetic.main.fragment_login.*
 class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
 
-
-    fun register(view :View){
-        mNavController.navigate(R.id.action_loginFragment_to_registerFragment)
-    }
-
-    fun forget(view: View){
-
-    }
-
     override fun getLayoutId(): Int = R.layout.fragment_login
     override fun actionsOnViewInflate() {
     }
@@ -44,6 +35,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                 when(view.id){
                     R.id.but_login -> loginToHomeFragment(account.text.toString(),password.text.toString())
                     R.id.but_regist -> toRegisterFragment()
+                    R.id.tv_forget -> mNavController.navigate(R.id.action_loginFragment_to_forgetFragment)
                 }
             }
         }

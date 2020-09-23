@@ -1,6 +1,8 @@
 package com.example.github.newsapplication.ui.login
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.AlarmClock
 import android.view.View
 import com.example.github.newsapplication.MyApplication
 import com.example.github.newsapplication.R
@@ -15,22 +17,30 @@ import kotlinx.android.synthetic.main.fragment_regist.*
 
 class ForgetFragment :BaseFragment<FragmentForgetBinding>(){
 
-    override fun getLayoutId(): Int = R.layout.fragment_regist
+    override fun getLayoutId(): Int = R.layout.fragment_forget
 
     override fun actionsOnViewInflate() {
 
     }
 
     override fun initFragment(view: View, savedInstanceState: Bundle?) {
+            mBinding?.let {
+                binding->
+                binding.viewclick = View.OnClickListener {
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "*/*"
+                        putExtra(Intent.EXTRA_EMAIL, account.text.toString())
+                        putExtra(Intent.EXTRA_SUBJECT, SharePreferencesUtils.getString(requireContext(),"account"))
 
+                    }
+                    if (intent.resolveActivity(requireContext().packageManager) != null) {
+                        startActivity(intent)
+                    }
+                }
+            }
     }
 
-    fun submit(account: String, password: String) {
-        if (SharePreferencesUtils.getString(MyApplication.instance,account).isEmpty()){
-            SharePreferencesUtils.saveString(MyApplication.instance,account,password)
-            mNavController.popBackStack()
-        }
-    }
+
 
 
 

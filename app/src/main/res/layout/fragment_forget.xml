@@ -39,7 +39,7 @@
             android:textColor="@color/title_white"
             android:background="@drawable/button_bg"
             android:text="send password to email"
-            android:id="@+id/but_submit"
+            android:id="@+id/btn_send"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
@@ -48,9 +48,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             bind:viewclick="@{viewclick}"
             />
-
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
