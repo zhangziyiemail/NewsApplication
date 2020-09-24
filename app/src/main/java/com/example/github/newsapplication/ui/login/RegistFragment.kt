@@ -1,8 +1,11 @@
 package com.example.github.newsapplication.ui.login
 
+import android.Manifest
 import android.R.attr.bitmap
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -10,6 +13,8 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Base64
 import android.view.View
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
@@ -71,10 +76,25 @@ class RegistFragment : BaseFragment<FragmentRegistBinding>(), DialogUtil.NoticeD
     fun camera() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             activity?.packageManager?.let {
-                takePictureIntent.resolveActivity(it)?.also {
-                    startActivityForResult(takePictureIntent, 0)
+                    takePictureIntent.resolveActivity(it)?.also {
+                        startActivityForResult(takePictureIntent, 0)
+                    }
                 }
-            }
+
+//            if (ContextCompat.checkSelfPermission(requireContext(),
+//                    Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){ //表示未授权时
+//
+//                activity?.let { ActivityCompat.requestPermissions(it,
+//                    arrayOf(Manifest.permission.CAMERA),1) };
+//            }else{
+//                activity?.packageManager?.let {
+//                    takePictureIntent.resolveActivity(it)?.also {
+//                        startActivityForResult(takePictureIntent, 0)
+//                    }
+//                }
+//
+//            }
+
         }
     }
 

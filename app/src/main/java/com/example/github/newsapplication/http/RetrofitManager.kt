@@ -51,8 +51,8 @@ object RetrofitManager {
 
         return OkHttpClient.Builder()
             .connectTimeout(5_000L, TimeUnit.MILLISECONDS)
-            .readTimeout(10_000, TimeUnit.MILLISECONDS)
-            .writeTimeout(30_000, TimeUnit.MILLISECONDS)
+            .readTimeout(10_00, TimeUnit.MILLISECONDS)
+            .writeTimeout(30_00, TimeUnit.MILLISECONDS)
             .addInterceptor(httpLoggingInterceptor)
             .addInterceptor(interceptor)
             .build()

@@ -40,8 +40,7 @@ abstract class BaseRecyclerAdapter<T>(var mData: MutableList<T>?):
         setVariable(data, position, holder)
         holder.binding.executePendingBindings()// when data change , system will be refresh next frame. Using executePendingBindings() will be immediately
         holder.binding.root.setOnClickListener {
-                v -> itemListener?.onItemClick(position, v)
-            Log.v("itemListener",if (itemListener == null) "2222" else "333")}
+                v -> itemListener?.onItemClick(position, v)}
         holder.binding.root.setOnLongClickListener { v ->
             itemLongClickListener?.onItemLongClick(position, v)
             false

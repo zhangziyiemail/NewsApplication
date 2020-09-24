@@ -31,16 +31,16 @@ class FavoritesFragment : BaseFragment<FragmentFavoritesBinding>() {
         ViewModelProvider(requireActivity(), FavoritesViewModeFactory(FavoritesListRepository()))
             .get(FavoritesViewModel::class.java)
     }
-
+    //获取布局
     override fun getLayoutId(): Int  = R.layout.fragment_favorites
-
+    //获取数据
     override fun actionsOnViewInflate() {
         mViewModel.fetchHomeNews{}
         mViewModel.articles?.observe(this, Observer {
             mAdapter.update(it)
         })
     }
-
+    //数据和view 进行绑定
     override fun initFragment(view: View, savedInstanceState: Bundle?) {
         mBinding?.let {
             binding->

@@ -25,7 +25,6 @@ class FavoritesListRepository {
 class FavoritesAdapter :BaseRecyclerAdapter<NewsData>(null){
 
 
-
     override fun getLayoutId(layout: Int): Int = R.layout.item_newslist
 
     override fun setVariable(

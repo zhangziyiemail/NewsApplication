@@ -2,7 +2,8 @@ package com.example.github.newsapplication.ui.home
 
 
 import android.annotation.SuppressLint
-import android.graphics.BitmapFactory
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.GravityCompat
@@ -10,13 +11,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
-import com.bumptech.glide.request.RequestOptions
 import com.example.github.newsapplication.MyApplication
 import com.example.github.newsapplication.R
 import com.example.github.newsapplication.Utils.PreferencesHelper
-import com.example.github.newsapplication.Utils.SharePreferencesUtils
 import com.example.github.newsapplication.base.BaseFragment
 import com.example.github.newsapplication.base.ERROR_CODE_INIT
 import com.example.github.newsapplication.base.ErrorReload
@@ -30,8 +27,6 @@ import com.example.github.newsapplication.entity.ObservableUser
 import com.example.github.newsapplication.entity.State
 import com.example.github.newsapplication.ui.detail.DetailFragment
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_regist.*
-import kotlinx.android.synthetic.main.nav_header_main.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -89,12 +84,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initFragment(view: View, savedInstanceState: Bundle?) {
-//        val headerView = user_profile_drawer.getHeaderView(0)
-//        val navViewHeaderBinding : NavHeaderMainBinding = NavHeaderMainBinding.bind(headerView)
-//        navViewHeaderBinding.viewclick = View.OnClickListener {
-//            if (!PreferencesHelper.hasLogin(MyApplication.instance)) toRegistFragment() else toLoginFragment()
-//        }
-//        navViewHeaderBinding.user = ObservableUser
+
         mHeaderBinding?.let {
             binding->
                 binding.user = ObservableUser
@@ -135,17 +125,30 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
             }
 
-            binding.indicator = resources.getString(R.string.action_settings)
+
 
         }
 
         mBinding?.userProfileDrawer?.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_favorites -> toFavorites()
+                R.id.nav_sendBroadcast -> sendMyBroadcast()
             }
             true
         }
     }
+
+     fun sendMyBroadcast() {
+        Intent().also {
+            it.setAction("com.example.broadcast.MY_NOTIFICATION")
+            it.putExtra("type", "notfied")
+            it.putExtra("title", "Notice me senpai!")
+            it.putExtra("data", "Notice me data!")
+            requireContext().sendBroadcast(it)
+        }
+         user_profile_drawer.menu.close()
+    }
+
 
     private fun toRegistFragment() {
         mNavController.navigate(R.id.action_homeFragment_to_loginFragment)

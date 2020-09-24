@@ -9,8 +9,8 @@
         <import type="android.view.View" />
 
         <variable
-            name="indicator"
-            type="String" />
+            name="refreshing"
+            type="Boolean" />
 
         <variable
             name="adapter"
@@ -24,9 +24,6 @@
             name="itemLongClick"
             type="com.example.github.newsapplication.base.OnItemLongClickListener" />
 
-        <variable
-            name="refreshing"
-            type="Boolean" />
 
         <variable
             name="refreshColor"
@@ -59,54 +56,54 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-<!--        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-<!--            android:id="@+id/swipe"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            bind:refreshColor="@{refreshColor}"-->
-<!--            bind:refreshListener="@{refreshListener}"-->
-<!--            bind:refreshState="@{refreshing}">-->
+        <!--        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+        <!--            android:id="@+id/swipe"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            bind:refreshColor="@{refreshColor}"-->
+        <!--            bind:refreshListener="@{refreshListener}"-->
+        <!--            bind:refreshState="@{refreshing}">-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/article_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:scrollbars="vertical"
+                android:visibility="@{errorStatus || loadingStatus || emptyStatus ? View.GONE : View.VISIBLE}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                bind:adapter="@{adapter}"
+                bind:hasFixedSize="@{true}"
+                bind:listItemClick="@{itemClick}"
+                bind:listItemLongClick="@{itemLongClick}"
+                tools:itemCount="20"
+                tools:listitem="@layout/item_newslist" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/article_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:orientation="vertical"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:scrollbars="vertical"
-                    android:visibility="@{errorStatus || loadingStatus || emptyStatus ? View.GONE : View.VISIBLE}"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    bind:adapter="@{adapter}"
-                    bind:hasFixedSize="@{true}"
-                    bind:listItemClick="@{itemClick}"
-                    bind:listItemLongClick="@{itemLongClick}"
-                    tools:itemCount="20"
-                    tools:listitem="@layout/item_newslist" />
+            <com.example.github.newsapplication.widget.StatusError
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{errorStatus ? View.VISIBLE : View.GONE}"
+                bind:reload="@{errorReload}" />
 
-                <com.example.github.newsapplication.widget.StatusError
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="@{errorStatus ? View.VISIBLE : View.GONE}"
-                    bind:reload="@{errorReload}" />
+            <com.example.github.newsapplication.widget.StatusLoading
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{loadingStatus ? View.VISIBLE : View.GONE}" />
 
-                <com.example.github.newsapplication.widget.StatusLoading
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="@{loadingStatus ? View.VISIBLE : View.GONE}" />
-
-                <com.example.github.newsapplication.widget.StatusEmpty
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="@{emptyStatus ? View.VISIBLE : View.GONE}" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-<!--        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+            <com.example.github.newsapplication.widget.StatusEmpty
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{emptyStatus ? View.VISIBLE : View.GONE}" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!--        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/user_profile_drawer"

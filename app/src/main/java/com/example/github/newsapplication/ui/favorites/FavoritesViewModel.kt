@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 
 class FavoritesViewModel(private val response : FavoritesListRepository) : ViewModel(){
     val articles = MutableLiveData<MutableList<NewsData>?>()
+    //吧数据变成本地的实体类 返回给 fragment
     fun fetchHomeNews(empty:() ->Unit) {
         viewModelScope.safeLaunch {
             block = {
